@@ -1,5 +1,8 @@
 schemaVersion: 2.3.0
 
+attributes:
+    editorFree: true
+
 metadata:
   name: cli-ai-opencode
   icon: https://raw.githubusercontent.com/Fredouye/devspaces/main/icon.svg
