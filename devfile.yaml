@@ -34,6 +34,8 @@ projects:
 
 components:
   - name: tools
+    attributes:
+      deployment/replicas: 1
     container:
       image: docker.io/fredouye/devspaces-opencode:{{image_version}}
       memoryRequest: 512Mi
