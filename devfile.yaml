@@ -1,0 +1,11 @@
+schemaVersion: 2.3.0
+metadata:
+  name: cli-ai-opencode
+components:
+  - name: tools
+    container:
+      image: docker.io/fredouye/devspaces-opencode:1.0
+      memoryRequest: 512Mi
+      memoryLimit: 8Gi
+      cpuRequest: '0.5'
+      cpuLimit: '2'
