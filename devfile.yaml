@@ -60,6 +60,13 @@ components:
     volume:
       size: 2Gi
 
+starterProjects:
+  - name: web-starter
+    description: A web service starting point.
+    git:
+      remotes:
+        origin: https://github.com/devfile-samples/devfile-stack-go.git
+
 commands:
   - id: opencode-run
     exec:
