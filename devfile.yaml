@@ -17,6 +17,18 @@ metadata:
 attributes:
   controller.devfile.io/storage-type: per-user               # per-workspace
 
+projects:
+  - name: mon-projet
+    git:
+      remotes:
+        origin: https://github.com/Fredouye/mon-projet.git
+      # facultatif : brancher sur une révision précise
+      checkoutFrom:
+        revision: main
+        remote: origin
+    # facultatif : sous-dossier de destination dans le sourceMapping
+    clonePath: mon-projet
+
 components:
   - name: tools
     container:
