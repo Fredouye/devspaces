@@ -1,6 +1,22 @@
 schemaVersion: 2.3.0
+
 metadata:
   name: cli-ai-opencode
+  icon: https://raw.githubusercontent.com/Fredouye/devspaces/main/icon.svg
+  displayName: CLI AI - OpenCode
+  description: Environnement sandbox pour Claude Code / OpenCode
+  version: 1.0.0
+  tags:
+    - ai
+    - cli
+    - opencode
+  projectType: cli
+  language: shell
+
+# Stockage persistant à l'échelle de l'utilisateur (survit aux redémarrages du workspace)
+attributes:
+  controller.devfile.io/storage-type: per-user               # per-workspace
+
 components:
   - name: tools
     container:
@@ -9,3 +25,47 @@ components:
       memoryLimit: 8Gi
       cpuRequest: '0.5'
       cpuLimit: '2'
+      sourceMapping: /projects
+      mountSources: true
+      env:
+        - name: OPENCODE_HOME
+          value: /home/user/.opencode
+        - name: SHELL
+          value: /bin/bash
+      volumeMounts:
+        - name: opencode-data
+          path: /home/user/.opencode
+      # Endpoint exposé si un outil web tourne dans le container
+      endpoints:
+        - name: opencode-ui
+          targetPort: 8080
+          exposure: public
+          protocol: https
+          secure: true
+
+  # Volume persistant référencé ci-dessus
+  - name: opencode-data
+    volume:
+      size: 2Gi
+
+commands:
+  - id: opencode-run
+    exec:
+      component: tools
+      commandLine: opencode
+      workingDir: ${PROJECT_SOURCE}
+      group:
+        kind: run
+        isDefault: true
+
+  - id: install-deps
+    exec:
+      component: tools
+      commandLine: npm install
+      workingDir: ${PROJECT_SOURCE}
+      group:
+        kind: build
+
+events:
+  postStart:
+    - install-deps
