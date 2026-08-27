@@ -13,6 +13,9 @@ metadata:
   projectType: cli
   language: shell
 
+variables:
+  image_version: 1.0
+
 # Stockage persistant à l'échelle de l'utilisateur (survit aux redémarrages du workspace)
 attributes:
   controller.devfile.io/storage-type: per-user               # per-workspace
@@ -32,7 +35,7 @@ projects:
 components:
   - name: tools
     container:
-      image: docker.io/fredouye/devspaces-opencode:1.0
+      image: docker.io/fredouye/devspaces-opencode:{{image_version}}
       memoryRequest: 512Mi
       memoryLimit: 8Gi
       cpuRequest: '0.5'
