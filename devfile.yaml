@@ -76,23 +76,12 @@ starterProjects:
         origin: https://github.com/devfile-samples/devfile-stack-go.git
 
 commands:
-  - id: opencode-run
+  - id: git-pull
     exec:
       component: tools
-      commandLine: opencode
+      commandLine: git pull --ff-only || true
       workingDir: ${PROJECT_SOURCE}
-      group:
-        kind: run
-        isDefault: true
-
-  - id: install-deps
-    exec:
-      component: tools
-      commandLine: npm install
-      workingDir: ${PROJECT_SOURCE}
-      group:
-        kind: build
 
 events:
   postStart:
-    - install-deps
+    - git-pull
