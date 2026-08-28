@@ -1,8 +1,5 @@
 schemaVersion: 2.3.0
 
-#attributes:
-#    editorFree: true
-
 metadata:
   name: cli-ai-opencode
   icon: https://raw.githubusercontent.com/Fredouye/devspaces/main/opencode-logo-light.svg
@@ -19,9 +16,9 @@ metadata:
 variables:
   image_version: "1.0"
 
-# Stockage persistant à l'échelle de l'utilisateur (survit aux redémarrages du workspace)
+# Stockage persistant partagé entre tous les workspaces de l'utilisateur dans ce namespace
 attributes:
-  controller.devfile.io/storage-type: per-user               # per-workspace
+  controller.devfile.io/storage-type: per-user
 
 projects:
   - name: mon-projet-rag
@@ -31,18 +28,6 @@ projects:
       checkoutFrom:
         revision: main
         remote: origin
-
-#projects:
-#  - name: mon-projet
-#    git:
-#      remotes:
-#        origin: https://github.com/Fredouye/rag-app.git
-#      # facultatif : brancher sur une révision précise
-#      checkoutFrom:
-#        revision: main
-#        remote: origin
-#    # facultatif : sous-dossier de destination dans le sourceMapping
-#    clonePath: mon-projet-rag
 
 components:
   - name: tools
@@ -61,55 +46,12 @@ components:
           value: /etc/opencode/config.json
         - name: OPENCODE_HOME
           value: /home/user/.opencode
-        - name: NODE_EXTRA_CA_CERTS          # let opencode/Node trust the lab.intra (Vault) CA
+        - name: NODE_EXTRA_CA_CERTS          # trust the lab.intra (Vault) CA from opencode/Node
           value: /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem
         - name: SHELL
           value: /bin/bash
-    # opencode default config, created and mounted read-only at /etc/opencode/config.json
-    - name: opencode-config
-      kubernetes:
-        deployByDefault: true
-        inlined: |
-          apiVersion: v1
-          kind: ConfigMap
-          metadata:
-            name: opencode-config
-            labels:
-              controller.devfile.io/mount-to-devworkspace: "true"
-            annotations:
-              controller.devfile.io/mount-path: /etc/opencode
-              controller.devfile.io/mount-as: subpath
-          data:
-            config.json: |
-              {
-                "$schema": "https://opencode.ai/config.json",
-                "provider": {
-                  "litellm": {
-                    "npm": "@ai-sdk/openai-compatible",
-                    "name": "LiteLLM (lab.intra)",
-                    "options": {
-                      "baseURL": "https://litellm.lab.intra/v1",
-                      "apiKey": "{env:LITELLM_TOKEN}"
-                    },
-                    "models": {
-                      "claude-opus-4-8": {
-                        "name": "Claude Opus 4.8 (LiteLLM)",
-                        "tool_call": true,
-                        "attachment": true,
-                        "limit": { "context": 200000, "output": 64000 }
-                      },
-                      "claude-sonnet-5": {
-                        "name": "Claude Sonnet 5.0 (LiteLLM)",
-                        "tool_call": true,
-                        "attachment": true,
-                        "limit": { "context": 200000, "output": 32000 }
-                      }
-                    }
-                  }
-                },
-                "model": "litellm/claude-opus-4-8",
-                "small_model": "litellm/claude-sonnet-5"
-              }
+
+  # opencode default config — created and mounted read-only at /etc/opencode/config.json
   - name: opencode-config
     kubernetes:
       deployByDefault: true
@@ -127,32 +69,33 @@ components:
           config.json: |
             {
               "$schema": "https://opencode.ai/config.json",
-              "theme": "system"
+              "provider": {
+                "litellm": {
+                  "npm": "@ai-sdk/openai-compatible",
+                  "name": "LiteLLM (lab.intra)",
+                  "options": {
+                    "baseURL": "https://litellm.lab.intra/v1",
+                    "apiKey": "{env:LITELLM_TOKEN}"
+                  },
+                  "models": {
+                    "claude-opus-4-8": {
+                      "name": "Claude Opus 4.8 (LiteLLM)",
+                      "tool_call": true,
+                      "attachment": true,
+                      "limit": { "context": 200000, "output": 64000 }
+                    },
+                    "claude-sonnet-5": {
+                      "name": "Claude Sonnet 5.0 (LiteLLM)",
+                      "tool_call": true,
+                      "attachment": true,
+                      "limit": { "context": 200000, "output": 64000 }
+                    }
+                  }
+                }
+              },
+              "model": "litellm/claude-opus-4-8",
+              "small_model": "litellm/claude-sonnet-5"
             }
-
-
-#      volumeMounts:
-#        - name: opencode-data
-#          path: /home/user/.opencode
-      # Endpoint exposé si un outil web tourne dans le container
-#      endpoints:
-#        - name: opencode-ui
-#          targetPort: 8080
-#          exposure: public
-#          protocol: https
-#          secure: true
-
-  # Volume persistant référencé ci-dessus
-#  - name: opencode-data
-#    volume:
-#      size: 2Gi
-
-#starterProjects:
-#  - name: web-starter
-#    description: A web service starting point.
-#    git:
-#      remotes:
-#        origin: https://github.com/devfile-samples/devfile-stack-go.git
 
 commands:
   - id: git-pull
