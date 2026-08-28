@@ -57,10 +57,9 @@ components:
       sourceMapping: /projects
       mountSources: true
       env:
-        - name: OPENCODE_HOME
-          value: /home/user/.opencode
-        - name: SHELL
-          value: /bin/bash
+        - name: OPENCODE_CONFIG
+          value: /home/user/.config/opencode/config.json
+
 #      volumeMounts:
 #        - name: opencode-data
 #          path: /home/user/.opencode
