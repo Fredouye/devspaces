@@ -85,7 +85,7 @@ components:
                       "limit": { "context": 200000, "output": 64000 }
                     },
                     "claude-sonnet-5": {
-                      "name": "Claude Sonnet 5.0 (LiteLLM)",
+                      "name": "Claude Sonnet 5 (LiteLLM)",
                       "tool_call": true,
                       "attachment": true,
                       "limit": { "context": 200000, "output": 64000 }
