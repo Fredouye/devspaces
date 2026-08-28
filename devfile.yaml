@@ -5,7 +5,7 @@ attributes:
 
 metadata:
   name: cli-ai-opencode
-  icon: https://raw.githubusercontent.com/Fredouye/devspaces/main/icon.svg
+  icon: https://raw.githubusercontent.com/Fredouye/devspaces/main/opencode-logo-light.svg
   displayName: CLI AI - OpenCode
   description: Environnement sandbox pour Claude Code / OpenCode
   version: 1.0.0
@@ -27,13 +27,13 @@ projects:
   - name: mon-projet
     git:
       remotes:
-        origin: https://github.com/Fredouye/mon-projet.git
+        origin: https://github.com/Fredouye/rag-app.git
       # facultatif : brancher sur une révision précise
       checkoutFrom:
         revision: main
         remote: origin
     # facultatif : sous-dossier de destination dans le sourceMapping
-    clonePath: mon-projet
+    clonePath: mon-projet-rag
 
 components:
   - name: tools
@@ -52,28 +52,28 @@ components:
           value: /home/user/.opencode
         - name: SHELL
           value: /bin/bash
-      volumeMounts:
-        - name: opencode-data
-          path: /home/user/.opencode
+#      volumeMounts:
+#        - name: opencode-data
+#          path: /home/user/.opencode
       # Endpoint exposé si un outil web tourne dans le container
-      endpoints:
-        - name: opencode-ui
-          targetPort: 8080
-          exposure: public
-          protocol: https
-          secure: true
+#      endpoints:
+#        - name: opencode-ui
+#          targetPort: 8080
+#          exposure: public
+#          protocol: https
+#          secure: true
 
   # Volume persistant référencé ci-dessus
-  - name: opencode-data
-    volume:
-      size: 2Gi
+#  - name: opencode-data
+#    volume:
+#      size: 2Gi
 
-starterProjects:
-  - name: web-starter
-    description: A web service starting point.
-    git:
-      remotes:
-        origin: https://github.com/devfile-samples/devfile-stack-go.git
+#starterProjects:
+#  - name: web-starter
+#    description: A web service starting point.
+#    git:
+#      remotes:
+#        origin: https://github.com/devfile-samples/devfile-stack-go.git
 
 commands:
   - id: git-pull
