@@ -59,6 +59,26 @@ components:
       env:
         - name: OPENCODE_CONFIG
           value: /home/user/.config/opencode/config.json
+  - name: opencode-config
+    kubernetes:
+      deployByDefault: true
+      inlined: |
+        apiVersion: v1
+        kind: ConfigMap
+        metadata:
+          name: opencode-config
+          labels:
+            controller.devfile.io/mount-to-devworkspace: "true"
+          annotations:
+            controller.devfile.io/mount-path: /home/user/.config/opencode
+            controller.devfile.io/mount-as: subpath
+        data:
+          config.json: |
+            {
+              "$schema": "https://opencode.ai/config.json",
+              "theme": "system"
+            }
+
 
 #      volumeMounts:
 #        - name: opencode-data
