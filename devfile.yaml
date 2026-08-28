@@ -17,7 +17,7 @@ metadata:
   language: shell
 
 variables:
-  image_version: 1.0
+  image_version: "1.0"
 
 # Stockage persistant à l'échelle de l'utilisateur (survit aux redémarrages du workspace)
 attributes:
