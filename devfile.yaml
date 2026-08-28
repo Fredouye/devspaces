@@ -1,7 +1,7 @@
 schemaVersion: 2.3.0
 
-attributes:
-    editorFree: true
+#attributes:
+#    editorFree: true
 
 metadata:
   name: cli-ai-opencode
@@ -24,16 +24,25 @@ attributes:
   controller.devfile.io/storage-type: per-user               # per-workspace
 
 projects:
-  - name: mon-projet
+  - name: mon-projet-rag
     git:
       remotes:
         origin: https://github.com/Fredouye/rag-app.git
-      # facultatif : brancher sur une révision précise
       checkoutFrom:
         revision: main
         remote: origin
-    # facultatif : sous-dossier de destination dans le sourceMapping
-    clonePath: mon-projet-rag
+
+#projects:
+#  - name: mon-projet
+#    git:
+#      remotes:
+#        origin: https://github.com/Fredouye/rag-app.git
+#      # facultatif : brancher sur une révision précise
+#      checkoutFrom:
+#        revision: main
+#        remote: origin
+#    # facultatif : sous-dossier de destination dans le sourceMapping
+#    clonePath: mon-projet-rag
 
 components:
   - name: tools
