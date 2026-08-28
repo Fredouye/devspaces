@@ -58,7 +58,58 @@ components:
       mountSources: true
       env:
         - name: OPENCODE_CONFIG
-          value: /home/user/.config/opencode/config.json
+          value: /etc/opencode/config.json
+        - name: OPENCODE_HOME
+          value: /home/user/.opencode
+        - name: NODE_EXTRA_CA_CERTS          # let opencode/Node trust the lab.intra (Vault) CA
+          value: /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem
+        - name: SHELL
+          value: /bin/bash
+    # opencode default config, created and mounted read-only at /etc/opencode/config.json
+    - name: opencode-config
+      kubernetes:
+        deployByDefault: true
+        inlined: |
+          apiVersion: v1
+          kind: ConfigMap
+          metadata:
+            name: opencode-config
+            labels:
+              controller.devfile.io/mount-to-devworkspace: "true"
+            annotations:
+              controller.devfile.io/mount-path: /etc/opencode
+              controller.devfile.io/mount-as: subpath
+          data:
+            config.json: |
+              {
+                "$schema": "https://opencode.ai/config.json",
+                "provider": {
+                  "litellm": {
+                    "npm": "@ai-sdk/openai-compatible",
+                    "name": "LiteLLM (lab.intra)",
+                    "options": {
+                      "baseURL": "https://litellm.lab.intra/v1",
+                      "apiKey": "{env:LITELLM_TOKEN}"
+                    },
+                    "models": {
+                      "claude-opus-4-8": {
+                        "name": "Claude Opus 4.8 (LiteLLM)",
+                        "tool_call": true,
+                        "attachment": true,
+                        "limit": { "context": 200000, "output": 64000 }
+                      },
+                      "claude-sonnet-5": {
+                        "name": "Claude Sonnet 5.0 (LiteLLM)",
+                        "tool_call": true,
+                        "attachment": true,
+                        "limit": { "context": 200000, "output": 32000 }
+                      }
+                    }
+                  }
+                },
+                "model": "litellm/claude-opus-4-8",
+                "small_model": "litellm/claude-sonnet-5"
+              }
   - name: opencode-config
     kubernetes:
       deployByDefault: true
@@ -70,7 +121,7 @@ components:
           labels:
             controller.devfile.io/mount-to-devworkspace: "true"
           annotations:
-            controller.devfile.io/mount-path: /home/user/.config/opencode
+            controller.devfile.io/mount-path: /etc/opencode
             controller.devfile.io/mount-as: subpath
         data:
           config.json: |
